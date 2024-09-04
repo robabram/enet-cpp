@@ -5,44 +5,41 @@
 #ifndef ENET_CPP_SOCKET_H
 #define ENET_CPP_SOCKET_H
 
-#include <stdexcept>
-
 #ifdef _WIN32
 #include "enet_cpp/win32.h"
 #else
 #include "enet_cpp/unix.h"
 #endif
 
+#include "enet_cpp/address.h"
+
 namespace enet {
-
-    class enet_socket_error : public std::runtime_error {
-    public:
-        explicit enet_socket_error(const std::string &t_err_msg) : std::runtime_error(t_err_msg) {}
-    };
-
 
     class ENetSocket {
     public:
-        ENetSocket(std::string t_addr, int t_port);
+        /**
+         * Class constructor
+         * @param t_addr
+         * @param t_port
+         */
+        ENetSocket(ENetSocketAddress& t_addr);
         ~ENetSocket();
 
         auto connect() -> int;
 
-        auto get_socket() const -> const int;
-        auto get_port() const -> const int;
-        auto get_addr() const -> const std::string;
-        auto is_connected() -> const bool;
+        int get_socket_handle() const;  /**< Return the system socket handle identifier */
+        const ENetSocketAddress& get_addr() const;  /**< Return the bound IP address */
+        auto is_connected() -> const bool;  /**< True if socket is connected otherwise false */
 
         auto send_packet(const std::string &data, size_t size) -> int;
 
         // recv()
 
     private:
-        ENetCPPSocket m_socket;
-        int m_port;
-        std::string m_str_port;
-        std::string m_addr;
-        struct addrinfo *m_addrinfo;
+        ENetSocketAddress m_socket_addr;  /**< Socket address object */
+
+        ENetCPPSocket m_socket_handle;  /**< System socket handle identifier */
+        struct addrinfo *m_socket_addrinfo;  /**< System address info record pointer */
         bool m_connected;
     };
 

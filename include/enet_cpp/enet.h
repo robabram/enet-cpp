@@ -9,25 +9,36 @@
 
 #include "enet_cpp/socket.h"
 
+namespace enet {
 
-extern void hello();
+    extern void hello();
 
 
-// -------------------------------------------------
-class ENetHost {
-public:
-    ENetHost(int val, int mul);
+    /******************************************************************************
+     * Class ENetHost
+     * This is the primary class for managing
+     ******************************************************************************/
+    class ENetHost {
+    public:
+        /**
+         * EnetHost constructor
+         * @param val The value
+         * @param mul The mul
+         */
+        ENetHost(int val, int mul);
 
-    ~ENetHost();
+        ~ENetHost();
 
-    void hello();
+        void hello();
 
-private:
-    int r;
-    int mul;
-    enet::ENetSocket* m_ipv4_socket;
-};
+    private:
+        int r;
+        int mul;
+        enet::ENetSocket *m_ipv4_socket;
+        // enet::ENetSocket* m_ipv6_socket;
+    };
 
+}
 
 #endif //ENET_CPP_ENET_H
 

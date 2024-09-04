@@ -11,9 +11,11 @@ add_library(enet_cpp SHARED
         include/enet_cpp/socket.h
         include/enet_cpp/unix.h
         include/enet_cpp/win32.h
-        src/enet.cpp
         src/host.cpp
         src/socket.cpp
+        include/enet_cpp/address.h
+        src/address.cpp
+        include/enet_cpp/errors.h
 )
 
 set_target_properties(enet_cpp PROPERTIES VERSION ${PROJECT_VERSION})
