@@ -13,10 +13,10 @@ namespace enet {
     public:
         ENetSocketAddress (std::string t_addr, int t_port);
 
-        bool is_valid ();
-        bool is_ipv4 ();
-        bool is_ipv6 ();
-        std::pair<const std::string, const int> get_socket_net ();
+        bool is_valid () const;
+        bool is_ipv4 () const;
+        bool is_ipv6 () const;
+        std::pair<const std::string, const int> get_socket_net () const;
 
         friend std::ostream& operator<< (std::ostream &os, const ENetSocketAddress& t);
 

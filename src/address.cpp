@@ -42,13 +42,13 @@ namespace enet {
 
     }
 
-    bool ENetSocketAddress::is_valid() { return m_valid; }
+    bool ENetSocketAddress::is_valid() const { return m_valid; }
 
-    bool ENetSocketAddress::is_ipv4() { return m_ipv4; }
+    bool ENetSocketAddress::is_ipv4() const { return m_ipv4; }
 
-    bool ENetSocketAddress::is_ipv6() { return m_ipv6; }
+    bool ENetSocketAddress::is_ipv6() const { return m_ipv6; }
 
-    std::pair<const std::string, const int> ENetSocketAddress::get_socket_net() {
+    std::pair<const std::string, const int> ENetSocketAddress::get_socket_net() const {
         return {m_addr, m_port};
     }
 
