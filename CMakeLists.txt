@@ -13,8 +13,8 @@ add_library(enet_cpp SHARED
         include/enet_cpp/win32.h
         src/host.cpp
         src/socket.cpp
-        include/enet_cpp/address.h
-        src/address.cpp
+        include/enet_cpp/socket_net.h
+        src/socket_net.cpp
         include/enet_cpp/errors.h
 )
 

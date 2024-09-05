@@ -2,6 +2,19 @@
 // This file is subject to the terms and conditions defined in the
 // file 'LICENSE', which is part of this source code package.
 //
+/**
+ * @mainpage ENet CPP Library Documentation
+ * @section intro_sec Introduction
+ * A C++20 "Greenfield" implementation of the ENet reliable UDP networking library
+ * @section install_sec Installation
+ *
+ * @subsection install_dependencies Installing Dependencies
+ * Do somethings ...
+ * @subsection install_library Installing Library
+ * Do somethings ...
+ * @subsection install_example Installing Examples
+ * Do somethings ...
+ */
 #ifndef ENET_CPP_ENET_H
 #define ENET_CPP_ENET_H
 
