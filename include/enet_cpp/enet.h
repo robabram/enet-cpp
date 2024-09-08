@@ -20,6 +20,7 @@
 
 #include <string>
 
+#include "enet_cpp/socket_net.h"
 #include "enet_cpp/socket.h"
 
 namespace enet {
@@ -47,7 +48,12 @@ namespace enet {
     private:
         int r;
         int mul;
+
+        enet::ENetSocketNetwork *m_ipv4_network;
         enet::ENetSocket *m_ipv4_socket;
+
+        enet::ENetSocketNetwork *m_ipv6_network;
+        enet::ENetSocket *m_ipv6_socket;
         // enet::ENetSocket* m_ipv6_socket;
     };
 

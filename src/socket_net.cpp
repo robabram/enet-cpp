@@ -12,13 +12,13 @@
 
 namespace enet {
 
-    ENetSocketNetwork::ENetSocketNetwork(std::string t_addr, int t_port) :
-            m_addr{std::move(t_addr)},
+    ENetSocketNetwork::ENetSocketNetwork(std::string &t_host, int t_port, NetworkAddressType t_addr_type) :
+            m_addr{t_host},
             m_port{t_port},
             m_valid{false},
-            m_ipv4{false},
-            m_ipv6{false},
+            m_addr_type{t_addr_type},
             m_socket_addrinfo{nullptr} {
+
         // IPv4 regex expression
         std::regex r_ipv4(
                 "(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])");
@@ -26,18 +26,25 @@ namespace enet {
         std::regex ipv6("((([0-9a-fA-F]){1,4})\\:){7}([0-9a-fA-F]){1,4}");
 
         // Validate that we have an IPv4 address or an IPv6 address
-        if (std::regex_match(m_addr, r_ipv4))  { m_ipv4 = true; }
-        else if (std::regex_match(m_addr, ipv6)) { m_ipv6 = true; }
-
-        // Check port, range is: 0 -> 65535
-        if ((m_ipv4 || m_ipv6) && m_port >= 0 && m_port <= 65535) { m_valid = true; }
-
-        if (m_valid) {
-            make_addr_info();
+        if (std::regex_match(m_addr, r_ipv4))  {
+            m_addr_type = NetworkAddressType::IPv4;
         } else {
-            std::string msg = std::format("Invalid socket address: {}:{}", m_addr, m_port);
-            throw enet_address_info_error(msg);
+            if (std::regex_match(m_addr, ipv6)) {
+                m_addr_type = NetworkAddressType::IPv6;
+            } else {
+                resolve_hostname();
+            }
         }
+
+        // Check port, valid range is between 1 and 65535.
+        if (m_port > 0 && m_port < 65536) { m_valid = true; }
+
+        int result = make_addr_info();
+
+        if (m_valid && result == 0 && m_socket_addrinfo != nullptr) return;
+
+        std::string msg = std::format("Invalid socket address: {}:{} ({})", m_addr, m_port, result);
+        throw enet_address_info_error(msg);
     }
 
     ENetSocketNetwork::~ENetSocketNetwork() {
@@ -58,15 +65,50 @@ namespace enet {
 
     bool ENetSocketNetwork::is_valid() const { return m_valid; }
 
-    bool ENetSocketNetwork::is_ipv4() const { return m_ipv4; }
-
-    bool ENetSocketNetwork::is_ipv6() const { return m_ipv6; }
+    NetworkAddressType ENetSocketNetwork::ip_version() const { return m_addr_type; }
 
     std::ostream &operator<<(std::ostream &os, const ENetSocketNetwork &t) {
         return os << std::format("{}:{}", t.m_addr, t.m_port);
     }
 
-    void ENetSocketNetwork::make_addr_info() {
+    void ENetSocketNetwork::resolve_hostname() {
+        /**
+         * Attempt to resolve the hostname to an IP address by making a DNS request
+         */
+        struct addrinfo hints{};
+        int status;
+        void *addr_ptr;
+        char addr_buf[INET6_ADDRSTRLEN];
+        struct addrinfo *tmp_addrinfo = nullptr;
+
+        memset(&hints, 0, sizeof(hints));
+        hints.ai_socktype = SOCK_STREAM;
+        switch (m_addr_type) {
+            case (NetworkAddressType::IPv4) : { hints.ai_family = AF_INET; break; }
+            case (NetworkAddressType::IPv6) : { hints.ai_family = AF_INET6; break; }
+            default: { hints.ai_family = AF_UNSPEC; }
+        }
+
+        // Resolve the hostname to an IP address or throw error
+        if ((status = getaddrinfo(m_addr.c_str(), nullptr, &hints, &tmp_addrinfo)) != 0) {
+            std::string msg = std::format("Failed to resolve hostname: {} ({})", m_addr, status);
+            throw enet_address_info_error(msg);
+        }
+
+        // The output of a DNS request may contain multiple IP addresses, but we will only use the first one.
+        if(tmp_addrinfo->ai_family == AF_INET) { // Address is IPv4
+            addr_ptr = &(reinterpret_cast<struct sockaddr_in*>(tmp_addrinfo->ai_addr)->sin_addr);
+            m_addr_type = NetworkAddressType::IPv4;
+        } else {  // Address is IPv6
+            addr_ptr = &(reinterpret_cast<struct sockaddr_in6*>(tmp_addrinfo->ai_addr)->sin6_addr);
+            m_addr_type = NetworkAddressType::IPv6;
+        }
+
+        m_addr = inet_ntop(tmp_addrinfo->ai_addr->sa_family, addr_ptr, addr_buf, sizeof(addr_buf));
+        freeaddrinfo(tmp_addrinfo);
+    }
+
+    int ENetSocketNetwork::make_addr_info() {
         /**
          * Construct the socket address info record for use with a socket.
          */
@@ -77,12 +119,7 @@ namespace enet {
         hints.ai_protocol = IPPROTO_UDP;
 
         std::string s_port = std::to_string(m_port);
-        int result = getaddrinfo(m_addr.c_str(), s_port.c_str(), &hints, &m_socket_addrinfo);
-
-        if (result != 0 || m_socket_addrinfo == nullptr) {
-            std::string msg = std::format("Invalid address or port: {}:{}", m_addr, m_port);
-            throw enet_address_info_error(msg);
-        }
+        return getaddrinfo(m_addr.c_str(), s_port.c_str(), &hints, &m_socket_addrinfo);
     }
 
 } // End namespace

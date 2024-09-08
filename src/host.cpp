@@ -26,10 +26,19 @@ namespace enet {
     void ENetHost::hello() {
         std::cout << "Hello = " << r * mul << "\n";
 
-        auto m_socket_addr = ENetSocketNetwork("127.0.0.1", 10000);
-        std::cout << "Socket Address : " << m_socket_addr << '\n';
+        std::string host = "example.com";
+        // std::string host = "2002::";  // Invalid IPv6 address, reserved for 6to4 mapping.
 
-        m_ipv4_socket = new ENetSocket(&m_socket_addr);
+        auto m_socket_net = ENetSocketNetwork(host, 15000, NetworkAddressType::IPv6);
+        std::cout << "info: socket Address: " << m_socket_net << '\n';
+
+        switch (m_socket_net.ip_version()) {
+                case (NetworkAddressType::IPv4): { std::cout << "IP Version: IPv4" << "\n"; break; }
+                case (NetworkAddressType::IPv6): { std::cout << "IP Version: IPv6" << "\n"; break; }
+                default: {}
+        }
+
+        m_ipv4_socket = new ENetSocket(&m_socket_net);
 
         try {
             m_ipv4_socket->connect();
@@ -40,9 +49,12 @@ namespace enet {
             }
         }
         catch (enet_socket_error &err) {
+            delete m_ipv4_socket;
+            m_ipv4_socket = nullptr;
             std::cout << err.what() << "\n";
         }
 
     }
 
 }
+

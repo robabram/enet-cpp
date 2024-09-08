@@ -12,7 +12,6 @@
 
 namespace enet {
 
-
     ENetSocket::ENetSocket(ENetSocketNetwork *t_socket_net) :
             m_socket_net{t_socket_net},
             m_socket_handle{0},
@@ -28,7 +27,6 @@ namespace enet {
     };
 
     void ENetSocket::connect() {
-
         m_socket_handle = socket(m_socket_net->get_addrinfo_rec()->ai_family, SOCK_DGRAM | SOCK_CLOEXEC, IPPROTO_UDP);
         if (m_socket_handle == ENET_INVALID_SOCKET) {
             std::string msg = std::format("Failed to create socket");
@@ -42,6 +40,5 @@ namespace enet {
     auto ENetSocket::send_packet(const std::string &data, size_t size) -> int {
         return 0;
     }
-
 
 }  // End namespace
