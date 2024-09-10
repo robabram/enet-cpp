@@ -4,6 +4,7 @@
 //
 #include <cstring>
 #include <format>
+#include <random>
 #include <regex>
 #include <iostream>
 #include "enet_cpp/errors.h"
@@ -37,7 +38,16 @@ namespace enet {
         }
 
         // Check port, valid range is between 1 and 65535.
-        if (m_port > 0 && m_port < 65536) { m_valid = true; }
+        if (m_port >= 0 && m_port < 65536) {
+            if (m_port == 0) {
+                // Seed with a real random value, if available
+                std::random_device r;
+                std::default_random_engine gen(r());
+                std::uniform_int_distribution<int> distribution(2048,65535);
+                m_port = distribution(gen);
+            }
+            m_valid = true;
+        }
 
         int result = make_addr_info();
 

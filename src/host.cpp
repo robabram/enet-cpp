@@ -26,10 +26,14 @@ namespace enet {
     void ENetHost::hello() {
         std::cout << "Hello = " << r * mul << "\n";
 
-        std::string host = "example.com";
+        // std::string host = "example.com";
         // std::string host = "2002::";  // Invalid IPv6 address, reserved for 6to4 mapping.
+        // auto m_socket_net = ENetSocketNetwork(host, 0, NetworkAddressType::Any);
 
-        auto m_socket_net = ENetSocketNetwork(host, 15000, NetworkAddressType::IPv6);
+        // Dual stack configuration
+        std::string host = "::";
+        auto m_socket_net = ENetSocketNetwork(host, 8000, NetworkAddressType::Any);
+
         std::cout << "info: socket Address: " << m_socket_net << '\n';
 
         switch (m_socket_net.ip_version()) {
