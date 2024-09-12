@@ -38,3 +38,13 @@ install(TARGETS enet_cpp
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
+
+# -----------------------------------------------------------------------
+# Catch2 unittest library include and build
+# -----------------------------------------------------------------------
+find_package(Catch2 3 REQUIRED)
+# These tests can use the Catch2-provided main
+file (GLOB_RECURSE TEST_SOURCES src/tests/*.cpp)
+add_executable(tests ${TEST_SOURCES})
+target_link_libraries(tests PRIVATE Catch2::Catch2WithMain enet_cpp)
+target_include_directories(tests PRIVATE include)

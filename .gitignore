@@ -4,6 +4,9 @@
 # CMake build directory
 cmake-build-debug
 
+# Exclude lib/Catch2 library
+lib/Catch2
+
 # Prerequisites
 *.d
 

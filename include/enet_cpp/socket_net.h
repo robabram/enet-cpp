@@ -36,10 +36,11 @@ namespace enet {
     public:
         /**
          * Create a new socket network information object containing an IP address and Port number. To setup
-         * a dual stack network, set 't_host' to '::' and 't_type' to 'Any".  If 't_host' is a domain name
-         * (IE: 'example.com' and 't_type' is 'Any', then the IP version is chosen by the the DNS entries returned.
-         * Setting 't_type' to 'IPv4' or 'IPv6' will cause the DNS lookup to only return addresses that match the type.
-         * If 't_host' is an IP address, 't_type' is ignored and will be forced to the correct IP address family type.
+         * a "dual stack" socket, set 't_host' to '::' and 't_addr_type' to 'Any".  If 't_host' is a domain name
+         * (IE: 'example.com' and 't_addr_type' is 'Any', then the IP version is chosen by the the DNS entries returned.
+         * Setting 't_addr_type' to 'IPv4' or 'IPv6' will cause the DNS lookup to only return addresses that match
+         * the type. If 't_host' is an IP address, 't_addr_type' is ignored and will be forced to the correct IP
+         * address family type.
          * @brief Constructor
          * @param t_host Valid IPv4/IPv6 address string, or domain host name. If t_host is IP addr, type arg is ignored
          * @param t_port Valid integer value between 0 and 65535. 0 = random port, 1-1023 are reserved ports.
