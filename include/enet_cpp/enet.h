@@ -19,42 +19,55 @@
 #define ENET_CPP_ENET_H
 
 #include <string>
+#include <stdexcept>
 
-#include "enet_cpp/socket_net.h"
+#ifdef _WIN32
+#include "enet_cpp/win32.h"
+#else
+#include "enet_cpp/unix.h"
+#endif
+
+#include "enet_cpp/enums.h"
+#include "enet_cpp/errors.h"
 #include "enet_cpp/socket.h"
 
 namespace enet {
 
-    extern void hello();
-
-
     /******************************************************************************
      * Class ENetHost
-     * This is the primary class for managing
+     * This is the primary class for managing a ENet CPP Host
      ******************************************************************************/
     class ENetHost {
     public:
         /**
-         * EnetHost constructor
-         * @param val The value
-         * @param mul The mul
+         * @brief ENetHost Constructor
+         * @param t_host IP address for socket to listen on, use '::' for dual stack socket
+         * @param t_port The IP port to listen on. Value range is 1-65535
+         * @param t_addr_type NetworkAddressType enum class value
          */
-        ENetHost(int val, int mul);
-
+        ENetHost(const std::string &t_host, int t_port, NetworkAddressType t_addr_type);
+        /**
+         * @brief ENetHost Destructor
+         */
         ~ENetHost();
-
-        void hello();
+        /**
+         * @brief Create a network socket and start listening on it for traffic
+         * @return 0 if socket setup was successful or -1 if there was an error
+         */
+        [[nodiscard]] int start();
+        /**
+         * @brief Stop listening for traffic and close network socket
+         */
+        void stop();
+        /**
+         * @brief Test if network socket is connected
+         * @return True if network socket is connected and listening for traffic, otherwise False
+         */
+        [[nodiscard]] bool is_connected();
 
     private:
-        int r;
-        int mul;
+        enet::ENetSocket *m_socket;
 
-        enet::ENetSocketNetwork *m_ipv4_network;
-        enet::ENetSocket *m_ipv4_socket;
-
-        enet::ENetSocketNetwork *m_ipv6_network;
-        enet::ENetSocket *m_ipv6_socket;
-        // enet::ENetSocket* m_ipv6_socket;
     };
 
 }

@@ -5,8 +5,8 @@
 #ifndef ENET_CPP_SOCKET_H
 #define ENET_CPP_SOCKET_H
 
-
 #include "enet_cpp/socket_net.h"
+
 
 namespace enet {
 
@@ -16,18 +16,25 @@ namespace enet {
      */
     public:
         /**
-         * @brief Constructor
+         * @brief ENetSocket Constructor
          * @param t_socket_net Pointer to an initialized ENetSocketNetwork object
          */
-        explicit ENetSocket(ENetSocketNetwork *t_socket_net);
+        explicit ENetSocket(const ENetSocketNetwork& t_socket_net);
+
         /**
-         * @brief Destructor
+         * @brief ENetSocket Destructor
          */
         ~ENetSocket();
+
         /**
-         * @brief Make a connection to the socket
+         * @brief Open a new UDP socket
          */
         void connect();
+
+        /**
+         * @brief Close the UDP socket
+         */
+        void disconnect();
 
         /**
          * @brief Is the socket connected
@@ -35,12 +42,12 @@ namespace enet {
          */
         [[nodiscard]] bool is_connected() const;
 
-        auto send_packet(const std::string &data, size_t size) -> int;
+        auto send_packet(const std::string& data, size_t size) -> int;
 
         // recv()
 
     private:
-        ENetSocketNetwork *m_socket_net;  // ENetSocketNetwork object
+        ENetSocketNetwork m_socket_net;  // ENetSocketNetwork object
         ENetCPPSocket m_socket_handle;  // System socket handle identifier
         bool m_connected;
     };

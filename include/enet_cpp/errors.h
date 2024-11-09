@@ -10,17 +10,17 @@
 namespace enet {
 
     class enet_address_info_error : public std::runtime_error {
-     /**
-     * Invalid socket info error - an invalid IP Address or Port
-     */
+        /**
+        * Invalid socket info error - an invalid IP Address or Port
+        */
     public:
         explicit enet_address_info_error(const std::string &t_err_msg) : std::runtime_error(t_err_msg) {}
     };
 
     class enet_socket_error : public std::runtime_error {
-     /**
-     * Socket error - an error occurred while opening or using a socket
-     */
+        /**
+        * Socket error - an error occurred while opening or using a socket
+        */
     public:
         explicit enet_socket_error(const std::string &t_err_msg) : std::runtime_error(t_err_msg) {}
     };

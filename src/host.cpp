@@ -3,61 +3,49 @@
 // file 'LICENSE', which is part of this source code package.
 //
 #include <iostream>
-#include "enet_cpp/errors.h"
 #include "enet_cpp/enet.h"
-#include "enet_cpp/socket_net.h"
-#include "enet_cpp/socket.h"
 
 namespace enet {
 
-    ENetHost::ENetHost(int val, int mul) :
-            r{val},
-            mul{mul},
-            m_ipv4_socket{nullptr} {}
+
+    ENetHost::ENetHost(const std::string &t_host, int t_port, NetworkAddressType t_addr_type) {
+        m_socket = new ENetSocket(ENetSocketNetwork(t_host, t_port, t_addr_type));
+    }
 
     ENetHost::~ENetHost() {
 
-        if (m_ipv4_socket != nullptr) {
-            std::cout << "Closing IPv4 socket" << "\n";
-            delete this->m_ipv4_socket;
+        if (m_socket != nullptr) {
+            std::cout << "Closing host socket" << "\n";
+            delete this->m_socket;
         }
     }
 
-    void ENetHost::hello() {
-        std::cout << "Hello = " << r * mul << "\n";
+    int ENetHost::start() {
 
-        // std::string host = "example.com";
-        // std::string host = "2002::";  // Invalid IPv6 address, reserved for 6to4 mapping.
-        // auto m_socket_net = ENetSocketNetwork(host, 0, NetworkAddressType::Any);
-
-        // Dual stack configuration
-        std::string host = "::";
-        auto m_socket_net = ENetSocketNetwork(host, 8000, NetworkAddressType::Any);
-
-        std::cout << "info: socket Address: " << m_socket_net << '\n';
-
-        switch (m_socket_net.ip_version()) {
-                case (NetworkAddressType::IPv4): { std::cout << "IP Version: IPv4" << "\n"; break; }
-                case (NetworkAddressType::IPv6): { std::cout << "IP Version: IPv6" << "\n"; break; }
-                default: {}
-        }
-
-        m_ipv4_socket = new ENetSocket(&m_socket_net);
+        std::cout << "Starting host server" << '\n';
 
         try {
-            m_ipv4_socket->connect();
-            if (m_ipv4_socket->is_connected()) {
+            m_socket->connect();
+            if (m_socket->is_connected()) {
                 std::cout << "Successfully created socket" << '\n';
-            } else {
-                std::cout << "Failed to create socket" << '\n';
+                return 0;
             }
+            std::cout << "Failed to create socket" << '\n';
         }
         catch (enet_socket_error &err) {
-            delete m_ipv4_socket;
-            m_ipv4_socket = nullptr;
             std::cout << err.what() << "\n";
         }
 
+        return -1;
+    }
+
+    void ENetHost::stop() {
+        m_socket->disconnect();
+        std::cout << "Host server has stopped" << '\n';
+    }
+
+    bool ENetHost::is_connected() {
+        return m_socket->is_connected();
     }
 
 }

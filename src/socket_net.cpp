@@ -7,18 +7,29 @@
 #include <random>
 #include <regex>
 #include <iostream>
+
 #include "enet_cpp/errors.h"
 #include "enet_cpp/socket_net.h"
 
 
 namespace enet {
 
-    ENetSocketNetwork::ENetSocketNetwork(std::string &t_host, int t_port, NetworkAddressType t_addr_type) :
+    ENetSocketNetwork::ENetSocketNetwork(const std::string &t_host, int t_port, NetworkAddressType t_addr_type) :
             m_addr{t_host},
             m_port{t_port},
             m_valid{false},
             m_addr_type{t_addr_type},
-            m_socket_addrinfo{nullptr} {
+            m_socket_addrinfo{nullptr} {}
+
+    ENetSocketNetwork::~ENetSocketNetwork() {
+        if (m_socket_addrinfo != nullptr) {
+            std::cout << "Freeing address info record" << "\n";
+            freeaddrinfo(m_socket_addrinfo);
+            m_socket_addrinfo = nullptr;
+        }
+    }
+
+    void ENetSocketNetwork::initialize() {
 
         // IPv4 regex expression
         std::regex r_ipv4(
@@ -55,14 +66,6 @@ namespace enet {
 
         std::string msg = std::format("Invalid socket address: {}:{} ({})", m_addr, m_port, result);
         throw enet_address_info_error(msg);
-    }
-
-    ENetSocketNetwork::~ENetSocketNetwork() {
-        if (m_socket_addrinfo != nullptr) {
-            std::cout << "Freeing address info record" << "\n";
-            freeaddrinfo(m_socket_addrinfo);
-            m_socket_addrinfo = nullptr;
-        }
     }
 
     addrinfo *ENetSocketNetwork::get_addrinfo_rec() const {
