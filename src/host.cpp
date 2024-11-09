@@ -32,7 +32,7 @@ namespace enet {
             }
             std::cout << "Failed to create socket" << '\n';
         }
-        catch (enet_socket_error &err) {
+        catch (socket_error &err) {
             std::cout << err.what() << "\n";
         }
 

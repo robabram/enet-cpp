@@ -3,8 +3,8 @@
 // file 'LICENSE', which is part of this source code package.
 //
 
-#ifndef ENET_CPP_ENUMS_H
-#define ENET_CPP_ENUMS_H
+#ifndef ENET_CPP_ENUM_H
+#define ENET_CPP_ENUM_H
 
 namespace enet {
 
@@ -17,4 +17,4 @@ namespace enet {
 
 } // End namespace
 
-#endif //ENET_CPP_ENUMS_H
+#endif //ENET_CPP_ENUM_H

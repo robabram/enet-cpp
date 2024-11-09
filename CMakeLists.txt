@@ -8,7 +8,7 @@ project(enet_cpp
 set(CMAKE_CXX_STANDARD 20)
 
 add_library(enet_cpp SHARED
-        include/enet_cpp/errors.h
+        include/enet_cpp/error.h
         include/enet_cpp/socket_net.h
         include/enet_cpp/socket.h
         include/enet_cpp/unix.h

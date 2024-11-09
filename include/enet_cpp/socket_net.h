@@ -13,14 +13,14 @@
 #include "enet_cpp/unix.h"
 #endif
 
-#include "enet_cpp/enums.h"
+#include "enet_cpp/enum.h"
 
 namespace enet {
 
     /**
      * A class to encapsulate the network address and port that a socket will use.  Includes validating
      * the address and port, creating the address info record used when creating a socket. Throws an
-     * "enet_socket_error" exception when there is an invalid IP, port or the address info record creation
+     * "socket_error" exception when there is an invalid IP, port or the address info record creation
      * fails.
      */
     class ENetSocketNetwork {
@@ -38,7 +38,7 @@ namespace enet {
          * @param t_port Valid integer value between 0 and 65535. 0 = random port, 1-1023 are reserved ports.
          * @param t_addr_type NetworkAddressType enum value. Default is "Any" and resolving t_host will determine type
          */
-        ENetSocketNetwork(const std::string &t_host, int t_port, NetworkAddressType t_addr_type = NetworkAddressType::Any);
+        ENetSocketNetwork(const std::string& t_host, int t_port, NetworkAddressType t_addr_type = NetworkAddressType::Any);
 
         /**
          * @brief Destructor
@@ -81,7 +81,7 @@ namespace enet {
          * @param t Reference to ENetSocketNetwork object
          * @return Return IP address and Port values as a string, delimited by a colon.
          */
-        friend std::ostream &operator<<(std::ostream &os, const ENetSocketNetwork &t);
+        friend std::ostream &operator<< (std::ostream &os, const ENetSocketNetwork &t);
 
     private:
         std::string m_addr;
@@ -90,8 +90,7 @@ namespace enet {
         NetworkAddressType m_addr_type;
         struct addrinfo *m_socket_addrinfo;  // System address info record pointer
 
-        void resolve_hostname();
-        int make_addr_info();
+        [[nodiscard]] bool resolve_hostname();
     };
 
 }  // End namespace

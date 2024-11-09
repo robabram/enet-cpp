@@ -14,6 +14,6 @@ namespace enet {
         std::string network = "127.0.0.1";
         auto m_socket_net = ENetSocketNetwork(network, 8000);
 
-        ENetHost host = ENetHost(m_socket_net);
+        ENetHost host = ENetHost(network, 8000, NetworkAddressType::IPv4);
     }
 }

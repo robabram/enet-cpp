@@ -27,8 +27,8 @@
 #include "enet_cpp/unix.h"
 #endif
 
-#include "enet_cpp/enums.h"
-#include "enet_cpp/errors.h"
+#include "enet_cpp/enum.h"
+#include "enet_cpp/error.h"
 #include "enet_cpp/socket.h"
 
 namespace enet {

@@ -5,7 +5,7 @@
 #include <format>
 #include <iostream>
 
-#include "enet_cpp/errors.h"
+#include "enet_cpp/error.h"
 #include "enet_cpp/socket.h"
 
 
@@ -27,7 +27,7 @@ namespace enet {
         m_socket_handle = socket(m_socket_net.get_addrinfo_rec()->ai_family, SOCK_DGRAM | SOCK_CLOEXEC, IPPROTO_UDP);
         if (m_socket_handle == ENET_INVALID_SOCKET) {
             std::string msg = std::format("Failed to create socket");
-            throw enet_socket_error(msg);
+            throw socket_error(msg);
         }
         m_connected = true;
     };
