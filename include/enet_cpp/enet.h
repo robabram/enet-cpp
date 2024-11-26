@@ -20,6 +20,8 @@
 
 #include <string>
 #include <stdexcept>
+#include <atomic>
+#include <thread>
 
 #ifdef _WIN32
 #include "enet_cpp/win32.h"
@@ -67,7 +69,10 @@ namespace enet {
 
     private:
         enet::ENetSocket *m_socket;
+        std::atomic<bool> m_stopFlag;         // Flag to indicate stopping of the worker thread.
+        std::thread* m_workerThread;          // Pointer to the worker thread.
 
+        void workerFunction();
     };
 
 }

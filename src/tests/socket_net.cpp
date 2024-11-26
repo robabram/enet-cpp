@@ -13,7 +13,7 @@ namespace enet {
          * Test local host IP addresses
          */
         // Default action for expect() calls must be set to "throwing" for tests to work correctly.
-        REQUIRE(default_Error_action == Error_action::throwing);
+        REQUIRE(default_error_action == ErrorActionEnum::throwing);
 
         std::string host = "127.0.0.1";
         auto m_socket_net1 = ENetSocketNetwork(host, 8000);
@@ -37,15 +37,15 @@ namespace enet {
 
     TEST_CASE("Invalid IP addresses", "[socket-net]") {
         /**
-         * Assert invalid IP addresses throw an 'address_info_error' error
+         * Assert invalid IP addresses throw an 'AddressInfoError' error
          */
         // Default action for expect() calls must be set to "throwing" for tests to work correctly.
-        REQUIRE(default_Error_action == Error_action::throwing);
+        REQUIRE(default_error_action == ErrorActionEnum::throwing);
 
         std::string host = "300.0.0.1";
-        REQUIRE_THROWS_AS(ENetSocketNetwork(host, 8000, NetworkAddressType::Any), address_info_error);
+        REQUIRE_THROWS_AS(ENetSocketNetwork(host, 8000, NetworkAddressType::Any), AddressInfoError);
         host = "2001:db8:a0b:12f0::::0:1";
-        REQUIRE_THROWS_AS(ENetSocketNetwork(host, 8000, NetworkAddressType::Any), address_info_error);
+        REQUIRE_THROWS_AS(ENetSocketNetwork(host, 8000, NetworkAddressType::Any), AddressInfoError);
     }
 
     TEST_CASE("IP address becomes a copy", "[socket-net]") {

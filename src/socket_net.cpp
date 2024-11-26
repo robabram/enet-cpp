@@ -72,7 +72,7 @@ namespace enet {
         auto result = getaddrinfo(m_addr.c_str(), s_port.c_str(), &hints, &m_socket_addrinfo);
         m_valid = (result == 0 && m_socket_addrinfo != nullptr);
 
-        expect([this] { return this->m_valid; }, address_info_error(
+        expect([this] { return this->m_valid; }, AddressInfoError(
                 std::format("Invalid socket address: {}:{} ({})", m_addr, m_port, result)));
     }
 
@@ -102,6 +102,7 @@ namespace enet {
         char addr_buf[INET6_ADDRSTRLEN];
         struct addrinfo *tmp_addrinfo = nullptr;
 
+        // Initialize hints structure using requested IP address type
         memset(&hints, 0, sizeof(hints));
         hints.ai_socktype = SOCK_STREAM;
         switch (m_addr_type) {
@@ -114,7 +115,7 @@ namespace enet {
         status = getaddrinfo(m_addr.c_str(), nullptr, &hints, &tmp_addrinfo);
 
         expect([status] { return status == 0; },
-            address_info_error(std::format("Failed to resolve hostname: {} ({})", m_addr, status)));
+            AddressInfoError(std::format("Failed to resolve hostname: {} ({})", m_addr, status)));
 
         if (status != 0)
             return false;

@@ -20,7 +20,7 @@ namespace enet {
     /**
      * A class to encapsulate the network address and port that a socket will use.  Includes validating
      * the address and port, creating the address info record used when creating a socket. Throws an
-     * "socket_error" exception when there is an invalid IP, port or the address info record creation
+     * "SocketError" exception when there is an invalid IP, port or the address info record creation
      * fails.
      */
     class ENetSocketNetwork {
@@ -29,7 +29,7 @@ namespace enet {
         /**
          * Create a new socket network information object containing an IP address and Port number. To setup
          * a "dual stack" socket, set 't_host' to '::' and 't_addr_type' to 'Any".  If 't_host' is a domain name
-         * (IE: 'example.com' and 't_addr_type' is 'Any', then the IP version is chosen by the the DNS entries returned.
+         * (IE: 'example.com' and 't_addr_type' is 'Any', then the IP version is chosen by the DNS entries returned.
          * Setting 't_addr_type' to 'IPv4' or 'IPv6' will cause the DNS lookup to only return addresses that match
          * the type. If 't_host' is an IP address, 't_addr_type' is ignored and will be forced to the correct IP
          * address family type.
@@ -90,6 +90,7 @@ namespace enet {
         NetworkAddressType m_addr_type;
         struct addrinfo *m_socket_addrinfo;  // System address info record pointer
 
+        [[nodiscard]] std::string format_address(const ENetSocketNetwork& t);
         [[nodiscard]] bool resolve_hostname();
     };
 

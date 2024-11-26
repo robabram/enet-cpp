@@ -27,7 +27,7 @@ namespace enet {
         m_socket_handle = socket(m_socket_net.get_addrinfo_rec()->ai_family, SOCK_DGRAM | SOCK_CLOEXEC, IPPROTO_UDP);
         if (m_socket_handle == ENET_INVALID_SOCKET) {
             std::string msg = std::format("Failed to create socket");
-            throw socket_error(msg);
+            throw SocketError(msg);
         }
         m_connected = true;
     };
@@ -37,6 +37,7 @@ namespace enet {
             std::cout << "Closing socket" << "\n";
             close(m_socket_handle);
             std::cout << "Socket closed" << "\n";
+            m_socket_handle = 0;
         }
         m_connected = false;
     }

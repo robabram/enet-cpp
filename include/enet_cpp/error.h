@@ -21,14 +21,15 @@ namespace enet {
      *        terminating : Failed condition will terminate program
      *        logging : Failed condition will log message to std::cerr
      */
-    enum class Error_action { ignore, throwing, terminating, logging };
+    enum class ErrorActionEnum { ignore, throwing, terminating, logging };
 
     /**
      * @brief Default behavior for the Expect() function. Change this default to change
      *        behavior of the expect() function. Setting default to "ignore" will cause
      *        the expect() function calls to be removed from the compiled binary.
+     *        Note: This is a compile time setting and should not be changed to a runtime setting.
      */
-    constexpr Error_action default_Error_action = Error_action::logging;
+    constexpr ErrorActionEnum default_error_action = ErrorActionEnum::logging;
 
     /* ------------------------------------------------------------------------------------
      * Predefined exception classes
@@ -37,20 +38,20 @@ namespace enet {
     /**
     * @brief Exception: Invalid socket info error, an invalid IP address or port.
     */
-    class address_info_error : public std::runtime_error {
+    class AddressInfoError : public std::runtime_error {
     public:
         const std::string m_error = "Invalid socket info error, an invalid IP address or port";
-        explicit address_info_error(const std::string &t_err_msg = std::string()) :
+        explicit AddressInfoError(const std::string &t_err_msg = std::string()) :
                 std::runtime_error(!t_err_msg.empty() ? t_err_msg : m_error) {}
     };
 
     /**
     * @brief Exception: Socket error, an error occurred while opening or using a socket.
     */
-    class socket_error : public std::runtime_error {
+    class SocketError : public std::runtime_error {
     public:
         const std::string m_error = "Socket error, an error occurred while opening or using a socket";
-        explicit socket_error(const std::string &t_err_msg = std::string()) :
+        explicit SocketError(const std::string &t_err_msg = std::string()) :
                 std::runtime_error(!t_err_msg.empty() ? t_err_msg : m_error) {}
     };
 
@@ -62,17 +63,17 @@ namespace enet {
      * @brief Expect function for testing invariants, pre-existing conditions, etc.
      *        Take "action" if the expected condition "cond" doesn't hold.
      */
-    template<Error_action action = default_Error_action, class C>
+    template<ErrorActionEnum action = default_error_action, class C>
     constexpr void expect(C cond, const std::runtime_error &ex,
                           std::source_location loc = std::source_location::current()) {
-        if constexpr (action == Error_action::logging)
+        if constexpr (action == ErrorActionEnum::logging)
             if (!cond()) {
                 std::string msg = std::format("{} ({}:{}): {}", loc.file_name(), loc.line(), loc.column(), ex.what());
                 std::cerr << "expect() failure: " << msg << '\n';
             }
-        if constexpr (action == Error_action::throwing)
+        if constexpr (action == ErrorActionEnum::throwing)
             if (!cond()) throw ex;
-        if constexpr (action == Error_action::terminating)
+        if constexpr (action == ErrorActionEnum::terminating)
             if (!cond()) std::terminate();
         // or no action
     }
